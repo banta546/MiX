@@ -8,8 +8,6 @@ namespace MiX
 
         private static int Main(string[] args)
         {
-            args = new string[] {"test.mid"};
-            //
             if (args.Count() < 1) fb.StdOut(Feedback.Error.INVALID_ARGS);
             int success = 0;
             foreach (string path in args)

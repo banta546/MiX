@@ -95,14 +95,11 @@ namespace MiX
                 xmk.timeSignatures.Add(ts);
             }
 
-            Xmk.Event.FileGroup fileGroup = Xmk.Event.FileGroup.GUITAR_3X2;
-            Xmk.Event.IndexGroup indexGroup;
             foreach (Chart.Event e in chart.events)
             {
                 switch (e.note)
                 {
                     case <9:
-                        indexGroup = Xmk.Event.IndexGroup.NOTE;
                         Xmk.Event xmkEvent = new Xmk.Event();
                         xmkEvent.note = chartNoteValues(e.difficulty, e.note);
                         xmkEvent.type = (byte)xmk.typeGroup(xmkEvent.note);
@@ -113,13 +110,12 @@ namespace MiX
                         xmkEvent.offset = 100;
                         xmkEvent.timeStart = e.timeStart * (960 / chart.resolution);
                         xmkEvent.timeEnd = e.timeEnd * (960 / chart.resolution);
-                        xmkEvent.fileGroups.Add(fileGroup);
-                        xmkEvent.indexGroup = indexGroup;
+                        xmkEvent.fileGroups.Add(Xmk.Event.FileGroup.GUITAR_3X2);
+                        xmkEvent.indexGroup = Xmk.Event.IndexGroup.NOTE;
                         xmk.events.Add(xmkEvent);
                         break;
                     
                     case 69:
-                        indexGroup = Xmk.Event.IndexGroup.HERO_POWER;
                         foreach (byte b in new byte[] {20, 38, 56, 74})
                         {
                             Xmk.Event xmkHPEvent = new Xmk.Event();
@@ -130,10 +126,26 @@ namespace MiX
                             xmkHPEvent.offset = 100;
                             xmkHPEvent.timeStart = e.timeStart * (960 / chart.resolution);
                             xmkHPEvent.timeEnd = e.timeEnd * (960 / chart.resolution);
-                            xmkHPEvent.fileGroups.Add(fileGroup);
-                            xmkHPEvent.indexGroup = indexGroup;
+                            xmkHPEvent.fileGroups.Add(Xmk.Event.FileGroup.GUITAR_3X2);
+                            xmkHPEvent.indexGroup = Xmk.Event.IndexGroup.HERO_POWER;
                             xmk.events.Add(xmkHPEvent);
                         }
+                        break;
+                    
+                    case 70:
+                        Xmk.Event s = new Xmk.Event();
+                        s.type = 4;
+                        s.note = 128;
+                        s.start = (float)ticksToSeconds((uint)e.timeStart);
+                        s.end = s.start;
+                        s.unk2 = Xmk.unk2;
+                        s.timeStart = e.timeStart * (960 / chart.resolution);
+                        s.timeEnd = e.timeEnd * (960 / chart.resolution);
+                        s.fileGroups.Add(Xmk.Event.FileGroup.CONTROL);
+                        s.fileGroups.Add(Xmk.Event.FileGroup.GUITAR_3X2);
+                        s.indexGroup = Xmk.Event.IndexGroup.SECTION;
+                        xmk.info.sections.Add(e.name);
+                        xmk.events.Add(s);
                         break;
                 }
             }

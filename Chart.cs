@@ -10,6 +10,7 @@ namespace MiX
             public long timeStart;
             public long timeEnd;
             public byte note;
+            public string name = "";
             public bool isHammer;
             public int length() => (int)(this.timeEnd - this.timeStart);
             public Difficulty difficulty;
@@ -63,10 +64,11 @@ namespace MiX
             {
                 if (chart[i].Contains("[Song]")) { i = ParseChartSong(chart, i); continue; }
                 if (chart[i].Contains("[SyncTrack]")) { i = ParseChartTempo(chart, i); continue; }
-                if (chart[i].Contains("[EasyGHLGuitar]")) { i = ParseChartNotes(chart, i, Event.Difficulty.EASY); continue; }
-                if (chart[i].Contains("[MediumGHLGuitar]")) { i = ParseChartNotes(chart, i, Event.Difficulty.MEDIUM); continue; }
-                if (chart[i].Contains("[HardGHLGuitar]")) { i = ParseChartNotes(chart, i, Event.Difficulty.HARD); continue; }
-                if (chart[i].Contains("[ExpertGHLGuitar]")) { i = ParseChartNotes(chart, i, Event.Difficulty.EXPERT); continue; }
+                if (chart[i].Contains("[Events]")) { i = ParseChartEvents(chart, i); continue; }
+                if (chart[i].Contains("[EasyGHLGuitar]")) { i = ParseChartGuitar(chart, i, Event.Difficulty.EASY); continue; }
+                if (chart[i].Contains("[MediumGHLGuitar]")) { i = ParseChartGuitar(chart, i, Event.Difficulty.MEDIUM); continue; }
+                if (chart[i].Contains("[HardGHLGuitar]")) { i = ParseChartGuitar(chart, i, Event.Difficulty.HARD); continue; }
+                if (chart[i].Contains("[ExpertGHLGuitar]")) { i = ParseChartGuitar(chart, i, Event.Difficulty.EXPERT); continue; }
             }
         }
 
@@ -120,7 +122,27 @@ namespace MiX
             return i;
         }
 
-        private int ParseChartNotes(string[] chart, int i, Event.Difficulty diff)
+        private int ParseChartEvents(string[] chart, int i)
+        {
+            int timeOut = 100000;
+            while (i < timeOut)
+            {
+                if (chart[i].Contains(" = "))
+                {
+                    string[] values = chart[i].Split(" = E ");
+                    Event e = new Event();
+                    e.timeStart = long.Parse(values[0]);
+                    e.note = 70;
+                    e.name = values[1].Replace("\"", "");
+                    events.Add(e);
+                }
+                if (chart[i].Contains('}')) break;
+                i++;
+            }
+            return i;
+        }
+
+        private int ParseChartGuitar(string[] chart, int i, Event.Difficulty diff)
         {
             int timeOut = 100000;
             while (i < timeOut)
@@ -139,7 +161,7 @@ namespace MiX
                         case "N":
                             Event n = new Event();
                             n.timeStart = long.Parse(tick[0]);
-                            n.timeEnd = long.Parse(com[2])+n.timeStart;
+                            n.timeEnd = long.Parse(com[2]) + n.timeStart;
                             n.note = byte.Parse(com[1]);
                             n.difficulty = diff;
                             if ((new byte[] {5, 6}).Contains(n.note))
@@ -157,7 +179,7 @@ namespace MiX
                         case "S":
                             Event s = new Event();
                             s.timeStart = long.Parse(tick[0]);
-                            s.timeEnd = long.Parse(com[2])+s.timeStart;
+                            s.timeEnd = long.Parse(com[2]) +s.timeStart;
                             s.note = 69;
                             s.difficulty = diff;
                             events.Add(s);
