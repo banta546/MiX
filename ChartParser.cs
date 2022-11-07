@@ -134,7 +134,7 @@ namespace MiX
                     
                     case 70:
                         Xmk.Event s = new Xmk.Event();
-                        s.type = 4;
+                        s.type = 3;
                         s.note = 128;
                         s.start = (float)ticksToSeconds((uint)e.timeStart);
                         s.end = s.start;

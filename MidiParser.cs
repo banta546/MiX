@@ -108,7 +108,7 @@ namespace MiX
                 ticks += t.DeltaTime;
                 if (t is SequenceTrackNameEvent) continue;
                 Xmk.Event e = new Xmk.Event();
-                e.type = 4;
+                e.type = 3;
                 e.note = 128;
                 e.start = (float)(new TimedEvent(t, ticks)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
                 e.end = e.start;
