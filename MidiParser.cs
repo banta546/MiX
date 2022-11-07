@@ -116,7 +116,7 @@ namespace MiX
                 e.timeStart = ticks * (960 / resolution);
                 e.indexGroup = Xmk.Event.IndexGroup.SECTION;
                 foreach (Xmk.Event.FileGroup fg in fileGroup) e.fileGroups.Add(fg);
-                xmk.info.sections.Add(((BaseTextEvent)t).Text.Substring(9, ((BaseTextEvent)t).Text.Length-2));
+                xmk.info.sections.Add(((BaseTextEvent)t).Text.Substring(9, ((BaseTextEvent)t).Text.Length-10));
                 xmk.events.Add(e);
             }
         }
