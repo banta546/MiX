@@ -217,7 +217,7 @@ namespace MiX
                         case "hwd":
                             Xmk.Event xmkEvent = new Xmk.Event();
                             xmkEvent.note = 78;
-                            xmkEvent.chord = 56;
+                            xmkEvent.type = 56;
                             xmkEvent.start = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
                             xmkEvent.offset = 100;
                             xmkEvent.timeStart = time * (960 / resolution);
