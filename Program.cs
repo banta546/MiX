@@ -8,27 +8,24 @@ namespace MiX
 
         private static int Main(string[] args)
         {
-            if (args.Count() < 1) fb.StdOut(Feedback.Error.INVALID_ARGS);
-            int success = 0;
-            foreach (string path in args)
+            if (args.Count() < 1) { fb.StdOut(Feedback.Error.INVALID_ARGS); return 1; }
+            if (!File.Exists(args[0])) { fb.StdOut(Feedback.Error.FILE_NOT_FOUND, args[0]); return 1; }
+            using (FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read))
             {
-                if (!File.Exists(path)) { fb.StdOut(Feedback.Error.FILE_NOT_FOUND, path); continue;}
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-                {
-                    if (!fs.CanRead) {fb.StdOut(Feedback.Error.FILE_ACCESS); continue;}
-                }
-
-                char delimiter = System.OperatingSystem.IsLinux() ? '/' : '\\';
-                string outPath = args[0].Contains(delimiter) ? args[0].Substring(0, args[0].LastIndexOf(delimiter)+1) : "";
-
-                Xmk? xmk = ParseExt(path);
-                if (xmk == null) continue;
-                if (xmk.ExportToFile(outPath) == 1) {fb.StdOut(Feedback.Error.NO_DATA); continue;}
-
-                fb.StdOut(outPath);
-                success++;
+                if (!fs.CanRead) { fb.StdOut(Feedback.Error.FILE_ACCESS); return 1; }
             }
-            fb.StdOut(success, args.Count());
+
+            char delimiter = System.OperatingSystem.IsLinux() ? '/' : '\\';
+            string outPath = args[0].Contains(delimiter) ? args[0].Substring(0, args[0].LastIndexOf(delimiter)+1) : "";
+
+            if (args.Count() == 2 && Directory.Exists(args[1])) outPath = args[1];
+            if (outPath.LastIndexOf(delimiter) != outPath.Count()-1) outPath += delimiter;
+
+            Xmk? xmk = ParseExt(args[0]);
+            if (xmk == null) return 1;
+            if (xmk.ExportToFile(outPath) == 1) fb.StdOut(Feedback.Error.NO_DATA);
+
+            fb.StdOut(outPath);
             return 0;
         }
 

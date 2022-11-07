@@ -42,13 +42,7 @@ namespace MiX
         public void StdOut(string path)
         {
             // File Written
-            Console.WriteLine($"Update: File(s) written to \"{path}\"");
-        }
-
-        public void StdOut(int x, int y)
-        {
-            // Ops Complete
-            Console.WriteLine($"{x}/{y} operations completed successfully");
+            Console.WriteLine($"File(s) written to \"{path}\"");
         }
 
         public void StdOut(Error e, string path="")
