@@ -191,7 +191,7 @@ namespace MiX
             {
                 // Toggle Taps
                 // TODO refactor using MidiEvent base class instead of Note
-                time += (int)e.DeltaTime * (960 / resolution);
+                time += (int)e.DeltaTime;
                 if (e is SysExEvent)
                 {
                     SysExEvent s = (SysExEvent)e;
@@ -228,7 +228,7 @@ namespace MiX
                         
                         case "hwu":
                             int i = xmk.events.FindLastIndex(x => x.indexGroup == Xmk.Event.IndexGroup.HIGHWAY);
-                            xmk.events[i].end = (float)(new TimedEvent(e)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
+                            xmk.events[i].end = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
                             break;
                     }
                 }
