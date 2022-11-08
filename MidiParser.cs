@@ -236,6 +236,9 @@ namespace MiX
                 {
                     switch (((BaseTextEvent)e).Text)
                     {
+                        case "PART GUITAR GHL":
+                            break;
+
                         case "hwd":
                             Xmk.Event xmkEvent = new Xmk.Event();
                             xmkEvent.note = 78;
