@@ -39,6 +39,12 @@ namespace MiX
             {66, 0b0000_1000}, {78, 0b0001_0000}, {90, 0b0001_1000}, {102, 0b0010_0000}
         };
 
+        private Dictionary<string,byte> highwayValue = new Dictionary<string, byte>()
+        {
+            {"108", 148}, {"109", 147}, {"110", 146}, {"111", 145}, {"112", 144},
+            {"113", 143}, {"114", 142}, {"115", 141}, {"116", 140}
+        };
+
         public Xmk ParseMidi()
         {
             foreach (TrackChunk track in midiFile.GetTrackChunks())
@@ -239,12 +245,23 @@ namespace MiX
                             xmkEvent.timeStart = time * (960 / resolution);
                             xmkEvent.fileGroups.Add(Xmk.Event.FileGroup.GUITAR_3X2);
                             xmkEvent.indexGroup = Xmk.Event.IndexGroup.HIGHWAY;
-                            xmk.events.Insert(xmk.events.FindLastIndex(x => x.timeStart <= xmkEvent.timeStart), xmkEvent);
+                            xmk.events.Add(xmkEvent);
                             break;
                         
                         case "hwu":
                             int i = xmk.events.FindLastIndex(x => x.indexGroup == Xmk.Event.IndexGroup.HIGHWAY);
                             xmk.events[i].end = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
+                            break;
+                        
+                        default:
+                            Xmk.Event hwe = new Xmk.Event();
+                            hwe.type = 58;
+                            hwe.note = highwayValue[((BaseTextEvent)e).Text];
+                            hwe.start = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
+                            hwe.end = hwe.start + 0.9f;
+                            hwe.fileGroups.Add(Xmk.Event.FileGroup.CONTROL);
+                            hwe.indexGroup = Xmk.Event.IndexGroup.HIGHWAY;
+                            xmk.events.Add(hwe);
                             break;
                     }
                 }
