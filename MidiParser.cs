@@ -149,11 +149,11 @@ namespace MiX
                 if (n.NoteNumber == 116)
                 {
                     indexGroup = Xmk.Event.IndexGroup.HERO_POWER;
-                    foreach (byte i in new byte[] {20, 38, 56, 74})
+                    foreach (byte i in new byte[] {3, 20, 38, 56, 74})
                     {
                         Xmk.Event e = new Xmk.Event();
                         e.note = i;
-                        e.type = (byte)xmk.typeGroup(e.note);
+                        e.type = i == 3 ? (byte)0 : (byte)xmk.typeGroup(e.note);
                         e.start = (float)(n.TimeAs<MetricTimeSpan>(tempoMap)).TotalSeconds;
                         e.end = (float)(n.EndTimeAs<MetricTimeSpan>(tempoMap)).TotalSeconds;
                         e.offset = 100;
@@ -163,6 +163,22 @@ namespace MiX
                         e.indexGroup = indexGroup;
                         xmk.events.Add(e);
                     }
+                }
+
+                if ((new int[] {62, 59, 53, 60, 64, 61, 58}).Contains(n.NoteNumber))
+                {
+                    indexGroup = Xmk.Event.IndexGroup.NOTE;
+                    Xmk.Event e = new Xmk.Event();
+                    e.note = 1;
+                    e.type = 0;
+                    e.start = (float)(n.TimeAs<MetricTimeSpan>(tempoMap)).TotalSeconds;
+                    e.end = (float)(n.EndTimeAs<MetricTimeSpan>(tempoMap)).TotalSeconds;
+                    e.offset = 100;
+                    e.timeStart = n.Time * (960 / resolution);
+                    e.timeEnd = n.EndTime * (960 / resolution);
+                    e.fileGroups.Add(fileGroup);
+                    e.indexGroup = indexGroup;
+                    xmk.events.Add(e);
                 }
 
                 if (midiForcedHammer.ContainsKey(n.NoteNumber))
