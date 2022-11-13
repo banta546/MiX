@@ -122,7 +122,7 @@ namespace MiX
                 e.timeStart = ticks * (960 / resolution);
                 e.indexGroup = Xmk.Event.IndexGroup.SECTION;
                 foreach (Xmk.Event.FileGroup fg in fileGroup) e.fileGroups.Add(fg);
-                xmk.info.sections.Add(((BaseTextEvent)t).Text.Substring(9, ((BaseTextEvent)t).Text.Length-10));
+                xmk.info.sections.Add(((BaseTextEvent)t).Text);
                 xmk.events.Add(e);
             }
         }
@@ -234,6 +234,20 @@ namespace MiX
                 }
                 if (e is BaseTextEvent)
                 {
+                    if (highwayValue.ContainsKey(((BaseTextEvent)e).Text))
+                    {
+                        Xmk.Event hwe = new Xmk.Event();
+                        hwe.type = 58;
+                        hwe.note = highwayValue[((BaseTextEvent)e).Text];
+                        hwe.start = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
+                        hwe.end = hwe.start + 0.9f;
+                        hwe.timeStart = time * (960 / resolution);
+                        hwe.fileGroups.Add(Xmk.Event.FileGroup.CONTROL);
+                        hwe.indexGroup = Xmk.Event.IndexGroup.HIGHWAY;
+                        xmk.events.Add(hwe);
+                        continue;
+                    }
+
                     switch (((BaseTextEvent)e).Text)
                     {
                         case "PART GUITAR GHL":
@@ -257,14 +271,6 @@ namespace MiX
                             break;
                         
                         default:
-                            Xmk.Event hwe = new Xmk.Event();
-                            hwe.type = 58;
-                            hwe.note = highwayValue[((BaseTextEvent)e).Text];
-                            hwe.start = (float)(new TimedEvent(e, time)).TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds;
-                            hwe.end = hwe.start + 0.9f;
-                            hwe.fileGroups.Add(Xmk.Event.FileGroup.CONTROL);
-                            hwe.indexGroup = Xmk.Event.IndexGroup.HIGHWAY;
-                            xmk.events.Add(hwe);
                             break;
                     }
                 }
