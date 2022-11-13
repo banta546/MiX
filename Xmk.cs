@@ -90,6 +90,13 @@ namespace MiX
         public List<TimeSignature> timeSignatures;
         public const UInt32 unk2 = 8935; // Don't know what this does
 
+        public Dictionary<int,int> barPair = new Dictionary<int, int>()
+        {
+            {59, 60}, {61, 62}, {63, 64},
+            {41, 42}, {43, 44}, {45, 46},
+            {23, 24}, {25, 26}, {27, 28},
+            { 5,  6}, { 7,  8}, { 9, 10}
+        };
         public Dictionary<int,int> barPairs = new Dictionary<int, int>()
         {
             // B1>W1 B2>W2 B3>W3 W1>B1 W2>B2 W3>B3
@@ -174,11 +181,12 @@ namespace MiX
             }
 
             // Set Bar Chords
-            foreach (Event e in events.FindAll(x => barPairs.ContainsKey(x.note)))
+            foreach (Event e in events.FindAll(x => barPair.ContainsKey(x.note)))
             {
                 Event? pairedNote = events.Find(
                     x => !e.Equals(x) && // isn't the same note
                     x.timeStart == e.timeStart && // starts at the same time
+                    barPairs.ContainsKey(x.note) &&
                     x.note == barPairs[e.note] // is the correct corresponding note
                     );
 
@@ -186,6 +194,7 @@ namespace MiX
                 {
                     e.chord |= 2;
                     events.Remove(pairedNote);
+                    Console.WriteLine(e);
                 }
             }
 
