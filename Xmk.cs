@@ -182,7 +182,11 @@ namespace MiX
                     x.note == barPairs[e.note] // is the correct corresponding note
                     );
 
-                if (pairedNote != null) e.chord |= 2;
+                if (pairedNote != null)
+                {
+                    e.chord |= 2;
+                    events.Remove(pairedNote);
+                }
             }
 
             // Set Crazy Chords
