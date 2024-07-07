@@ -150,7 +150,7 @@ namespace MiX
             if (nextNote != null && !chord.Contains(nextNote))
             {
                 chord.Add(nextNote);
-                chord = getCrazyChord(chord, nextNote);
+                chord = getCrazyChord(chord, note);
             }
             return chord;
         }
@@ -171,6 +171,7 @@ namespace MiX
                 
                 Event? lastNote = events.FindLast(
                     x => x.isSameGroup(x.type, e.type) && // Same group
+                    barPairs.ContainsKey(x.note) &&
                     x.timeStart < e.timeStart // Earlier timestamp
                     );
 
